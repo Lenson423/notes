@@ -1,50 +1,28 @@
 import os
-from psycopg2 import pool
+import asyncio
+import asyncpg
 from dotenv import load_dotenv
 
-# Load .env file
-load_dotenv()
+async def main():
+    # Load .env file
+    load_dotenv()
+    # Get the connection string from the environment variable
+    connection_string = os.getenv('DATABASE_URL')
+    # Create a connection pool
+    pool = await asyncpg.create_pool(connection_string)
+    # Acquire a connection from the pool
+    async with pool.acquire() as conn:
+        # Execute SQL commands to retrieve the current time and version from PostgreSQL
+        time = await conn.fetchval('SELECT NOW();')
+        version = await conn.fetchval('SELECT version();')
+        info = await conn.fetch('SELECT * FROM playing_with_neon;')
+        columns = [dict(row) for row in info]
+    # Close the pool
+    await pool.close()
+    # Print the results
+    print('Current time:', time)
+    print('PostgreSQL version:', version)
+    print(columns)
 
-# Get the connection string from the environment variable
-connection_string = os.getenv('DATABASE_URL')
-
-# Create a connection pool
-connection_pool = pool.SimpleConnectionPool(
-    1,  # Minimum number of connections in the pool
-    3,  # Maximum number of connections in the pool
-    connection_string
-)
-
-# Check if the pool was created successfully
-if connection_pool:
-    print("Connection pool created successfully")
-
-# Get a connection from the pool
-conn = connection_pool.getconn()
-
-# Create a cursor object
-cur = conn.cursor()
-
-# Execute SQL commands to retrieve the current time and version from PostgreSQL
-cur.execute('SELECT NOW();')
-time = cur.fetchone()[0]
-
-cur.execute('SELECT version();')
-version = cur.fetchone()[0]
-
-info = []
-cur.execute('SELECT * FROM playing_with_neon;')
-while (a := cur.fetchone()) is not None:
-    info.append(a)
-
-# Close the cursor and return the connection to the pool
-cur.close()
-connection_pool.putconn(conn)
-
-# Close all connections in the pool
-connection_pool.closeall()
-
-# Print the results
-print('Current time:', time)
-print('PostgreSQL version:', version)
-print(info)
+if __name__ == '__main__':
+    asyncio.run(main())
