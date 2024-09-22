@@ -20,6 +20,8 @@ from accounts import views
 from django.contrib.auth.views import LoginView
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +30,8 @@ urlpatterns = [
     path('accounts/logout/', views.logout_view, name='logout'),
     path('accounts/change_password/', views.change_password, name='change_password'),
     path('accounts/', include('django.contrib.auth.urls')),
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('summernote/', include('django_summernote.urls')),
     path('', include('notes.urls'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

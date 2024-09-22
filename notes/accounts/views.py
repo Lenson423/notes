@@ -1,4 +1,7 @@
 from django.contrib.auth import login, authenticate
+from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import RefreshToken
+
 from .models import SignUpForm
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout
@@ -16,6 +19,10 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             login(request, user)
+
+            refresh = RefreshToken.for_user(user)
+            request.session['refresh'] = str(refresh)
+            request.session['access'] = str(refresh.access_token)
             return redirect('home')
     else:
         form = SignUpForm()
@@ -23,7 +30,6 @@ def signup(request):
 
 
 def logout_view(request):
-    user = request.user
     logout(request)
     return redirect('login')
 
@@ -34,9 +40,14 @@ def change_password(request):
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
             messages.success(request, 'Your password was successfully updated!')
+
+            refresh = RefreshToken.for_user(user)
+            request.session['refresh'] = str(refresh)
+            request.session['access'] = str(refresh.access_token)
             return redirect('notes')
     else:
         form = PasswordChangeForm(request.user)
+
     return render(request, 'change_password.html', {
         'form': form
     })
