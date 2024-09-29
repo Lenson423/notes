@@ -96,8 +96,8 @@
 
 ## Прототипы страниц
 
-### [Десктопный дизайн](https://www.figma.com/design/nfZD6QHBtFL7f2xXTvDdAw/Comp?node-id=0-1&t=WxR3ehF0cjpeAOGn-1)
-### [Мобильный дизайн](https://www.figma.com/design/tRNl6nzTKKYvTG7Kk6PSpr/mobile?node-id=14-157&t=SBV10wKl4iM9lNGa-1)
+### [Десктопный дизайн](https://www.figma.com/design/nfZD6QHBtFL7f2xXTvDdAw/Comp)
+### [Мобильный дизайн](https://www.figma.com/design/tRNl6nzTKKYvTG7Kk6PSpr/mobile)
 
 <img src="src/readmeIMG2.png" alt="образец дизайна в Figma">
 
