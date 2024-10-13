@@ -1,22 +1,29 @@
 {% load static %}
 
 <style>
+    $navbar-bg-color: #003153;
+    $navbar-link-color: white;
+    $navbar-hover-bg-color: #FF8E00;
+
     .navbar-custom {
-        background-color: #003153;
-        color: white;
+        background-color: $navbar-bg-color;
+        color: $navbar-link-color;
+
+        .navbar-brand,
+        .navbar-nav {
+            .nav-link {
+                padding: 10px 15px;
+                border-radius: 5px;
+                color: $navbar-link-color;
+
+                &:hover {
+                    color: $navbar-bg-color;
+                    background-color: $navbar-hover-bg-color;
+                }
+            }
+        }
     }
 
-    .navbar-custom .navbar-brand,
-    .navbar-custom .navbar-nav .nav-link {
-        padding: 10px 15px;
-        border-radius: 5px;
-        color: white;
-    }
-
-    .navbar-custom .navbar-nav .nav-link:hover {
-        color: #003153;
-        background-color: #FF8E00;
-    }
 </style>
 
 <nav class="navbar navbar-expand-md navbar-custom sticky-top" data-sidebarClass="navbar-dark bg-dark">

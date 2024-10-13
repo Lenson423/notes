@@ -7,76 +7,72 @@
     </head>
 
     <style>
+        $primary-color: #FF8E00;
+        $background-color: #F5F5F5;
+        $text-color: black;
+
         .welcome-container {
-            width: 100%; /* Даем 100% ширины, а flex будет управлять распределением */
-            margin: 20px auto;
+            width: 100%; // Даем 100% ширины, а flex будет управлять распределением
+        margin: 20px auto;
             text-align: center;
-        }
-
-        .welcome-title {
-            text-decoration: underline;
-            text-decoration-color: #FF8E00;
-            text-underline-offset: 20px;
-            color: black;
-            font-family: 'Laila', sans-serif;
-            font-weight: 500;
-            font-size: 24px;
-            margin-bottom: 60px;
-        }
-
-        .custom-button {
-            display: block;
-            border: 2px solid #FF8E00;
-            border-radius: 5px;
-            color: black;
-            font-family: 'Laila', sans-serif;
-            background-color: #F5F5F5;
-            padding: 15px 0;
-            width: 50%;
-            margin: 30px auto;
-            font-size: 24px;
-            text-decoration: none;
-            text-align: center;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .custom-button:hover {
-            background-color: #FF8E00;
-            color: black;
-            text-decoration: none;
-        }
-
-        /* Настройки для планшетов и больших экранов */
-        @media (min-width: 768px) {
-            .content-wrapper {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin: 0 auto;
-                width: 100%; /* Контейнер на всю ширину */
-            }
 
             .welcome-title {
-                font-size: 48px;
+                text-decoration: underline;
+                text-decoration-color: $primary-color;
+                text-underline-offset: 20px;
+                color: $text-color;
+                font-family: 'Laila', sans-serif;
+                font-weight: 500;
+                font-size: 24px;
+                margin-bottom: 60px;
+
+                @media (min-width: 768px) {
+                    font-size: 48px;
+                }
             }
 
-            .welcome-container {
-                width: 50%; /* Текст занимает половину экрана */
-                margin: 20px;
-            }
+            .custom-button {
+                display: block;
+                border: 2px solid $primary-color;
+                border-radius: 5px;
+                color: $text-color;
+                font-family: 'Laila', sans-serif;
+                background-color: $background-color;
+                padding: 15px 0;
+                width: 50%;
+                margin: 30px auto;
+                font-size: 24px;
+                text-decoration: none;
+                text-align: center;
+                transition: background-color 0.3s, color 0.3s;
 
-            .image-container {
-                width: 50%; /* Изображение занимает оставшуюся половину */
-                justify-content: center;
-            }
-
-            .image-container img {
-                margin: auto;
-                width: 80%;
-                height: auto;
-                border-radius: 10px;
+                &:hover {
+                    background-color: $primary-color;
+                    color: $text-color;
+                    text-decoration: none;
+                }
             }
         }
+
+           .content-wrapper {
+               display: flex;
+               justify-content: space-between;
+               align-items: center;
+               margin: 0 auto;
+               width: 100%; // Контейнер на всю ширину
+
+           .image-container {
+               width: 50%; // Изображение занимает оставшуюся половину
+           justify-content: center;
+
+               img {
+                   margin: auto;
+                   width: 80%;
+                   height: auto;
+                   border-radius: 10px;
+               }
+           }
+
     </style>
 
     <div class="container-fluid content-wrapper">
