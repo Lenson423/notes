@@ -1,88 +1,94 @@
 {% extends 'registration_base.html' %}
 {% load crispy_forms_tags %}
-{% block title %} Notekeeper {% endblock %}
-<!-- {% load humanize %} -->
+{% block title %} Notes {% endblock %}
 {% block content %}
-<div class="container-fluid" style="margin-top: 20px; margin-bottom: 50px;">
-    <div class="row text-center">
-        <div class="col">
-            <h1>Features</h1>
-            <hr style="width: 100px; border: 0.5px solid; margin-bottom: 50px;">
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Laila:wght@400;500;700&display=swap" rel="stylesheet">
+    </head>
+
+    <style>
+        .welcome-container {
+            width: 100%; /* Даем 100% ширины, а flex будет управлять распределением */
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .welcome-title {
+            text-decoration: underline;
+            text-decoration-color: #FF8E00;
+            text-underline-offset: 20px;
+            color: black;
+            font-family: 'Laila', sans-serif;
+            font-weight: 500;
+            font-size: 24px;
+            margin-bottom: 60px;
+        }
+
+        .custom-button {
+            display: block;
+            border: 2px solid #FF8E00;
+            border-radius: 5px;
+            color: black;
+            font-family: 'Laila', sans-serif;
+            background-color: #F5F5F5;
+            padding: 15px 0;
+            width: 50%;
+            margin: 30px auto;
+            font-size: 24px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .custom-button:hover {
+            background-color: #FF8E00;
+            color: black;
+            text-decoration: none;
+        }
+
+        /* Настройки для планшетов и больших экранов */
+        @media (min-width: 768px) {
+            .content-wrapper {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin: 0 auto;
+                width: 100%; /* Контейнер на всю ширину */
+            }
+
+            .welcome-title {
+                font-size: 48px;
+            }
+
+            .welcome-container {
+                width: 50%; /* Текст занимает половину экрана */
+                margin: 20px;
+            }
+
+            .image-container {
+                width: 50%; /* Изображение занимает оставшуюся половину */
+                justify-content: center;
+            }
+
+            .image-container img {
+                margin: auto;
+                width: 80%;
+                height: auto;
+                border-radius: 10px;
+            }
+        }
+    </style>
+
+    <div class="container-fluid content-wrapper">
+        <!-- Текстовая часть -->
+        <div class="welcome-container">
+            <h1 class="welcome-title">Welcome to Notes</h1>
+            <a class="custom-button" href="{% url 'login' %}">Login</a>
+            <a class="custom-button" href="{% url 'signup' %}">Sign Up</a>
+        </div>
+        <!-- Изображение справа от текста -->
+        <div class="image-container d-none d-md-block">
+            <img src="./../static/img/input.png" alt="Notes Image">
         </div>
     </div>
-    <div class="row text-center">
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-sticky-note" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Save</h4>
-            <p>
-                Save notes.. And thats all we want. Keeping it simple, notekeeper has all the tools (only necessary one's 😉) you need at one place
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-lock" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Encrypted</h4>
-            <p>
-                We take security very seriously. All your notes are encrypted
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-share-square" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Share</h4>
-            <p>
-                Hassel-free share your notes with each other without sharing login credentials
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-copy" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Copy</h4>
-            <p>
-                Copying text from your notes is very easy. Just select the text and it will be copied to your clipboard
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-edit" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Edit</h4>
-            <p>
-                Notekeeper supports markdown. Don't worry if you don't know markdown, we have added a physical toolbar too :)
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fab fa-searchengin" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Search</h4>
-            <p>
-                Search notes quickly using your note titles or note tags
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-sort" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Sort</h4>
-            <p>
-                Sort Notes based on datetime or note titles (ascending or descending)
-            </p>
-        </div>
-
-        <div class="col-6 col-md-3 col-lg-3">
-            <i class="fas fa-thumbtack" style="font-size: 50px; margin-bottom: 5%;"></i>
-            <h4>Quick Access</h4>
-            <p>
-                Faster access to recently modified notes on your sidebar
-            </p>
-        </div>
-    </div>
-</div>
-
-<div class="container-fluid bg-light" style="margin-top: 20px;">
-    <div class="row text-center">
-        <div class="col" style="margin-top: 20px;">
-            <h1>2024</h1>
-            <hr style="width: 100px; border: 0.5px solid; margin-bottom: 50px;">
-        </div>
-    </div>
-</div>
 {% endblock %}

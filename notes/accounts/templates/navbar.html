@@ -1,5 +1,25 @@
 {% load static %}
-<nav class="navbar navbar-expand-md navbar-dark sticky-top bg-dark" data-sidebarClass="navbar-dark bg-dark">
+
+<style>
+    .navbar-custom {
+        background-color: #003153;
+        color: white;
+    }
+
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-nav .nav-link {
+        padding: 10px 15px;
+        border-radius: 5px;
+        color: white;
+    }
+
+    .navbar-custom .navbar-nav .nav-link:hover {
+        color: #003153;
+        background-color: #FF8E00;
+    }
+</style>
+
+<nav class="navbar navbar-expand-md navbar-custom sticky-top" data-sidebarClass="navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'home' %}">
         Notes
     </a>

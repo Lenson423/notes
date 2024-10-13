@@ -12,6 +12,12 @@ class SignUpForm(UserCreationForm):
         model = User
         fields = UserCreationForm.Meta.fields + ('first_name', 'last_name', 'email',)
 
+    def __init__(self, *args, **kwargs):
+        super(SignUpForm, self).__init__(*args, **kwargs)
+        # Убираем требования к паролю
+        self.fields['password1'].help_text = "Your password must contain at least 8 characters"
+        self.fields['password2'].help_text = None
+
     def save(self, commit=True):
         user = super(SignUpForm, self).save(commit=False)
         user.first_name = self.cleaned_data["first_name"]
