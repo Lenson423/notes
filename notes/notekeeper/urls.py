@@ -25,10 +25,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/signup/', views.signup, name='signup'),
+    path('accounts/signup/', views.View.signup, name='signup'),
     path('accounts/login/', LoginView.as_view(redirect_authenticated_user=True), name='login'),
-    path('accounts/logout/', views.logout_view, name='logout'),
-    path('accounts/change_password/', views.change_password, name='change_password'),
+    path('accounts/logout/', views.View.logout_view, name='logout'),
+    path('accounts/change_password/', views.View.change_password, name='change_password'),
+    path('accounts/activate/<uidb64>/<token>/', views.View.activate, name='activate'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),

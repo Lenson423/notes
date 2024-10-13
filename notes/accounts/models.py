@@ -18,5 +18,6 @@ class SignUpForm(UserCreationForm):
         user.last_name = self.cleaned_data["last_name"]
         user.email = self.cleaned_data["email"]
         if commit:
+            user.is_active = False
             user.save()
         return user
