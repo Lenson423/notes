@@ -4,11 +4,17 @@ from django.contrib.auth.models import User
 
 import logging
 
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
 logger = logging.getLogger(__name__)
 
 
 # Create your models here.
 class SignUpForm(UserCreationForm):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     first_name = forms.CharField(max_length=32)
     last_name = forms.CharField(max_length=32)
     email = forms.EmailField(max_length=64)

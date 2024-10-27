@@ -1,11 +1,16 @@
 import logging
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from rest_framework.permissions import IsAuthenticated
+from rest_framework_simplejwt.authentication import JWTAuthentication
 
 logger = logging.getLogger(__name__)
 
 
 class User:
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def create_user(self, username, password, request):
         try:
             self.user = authenticate(username=username, password=password)  # Adding into DB with users
