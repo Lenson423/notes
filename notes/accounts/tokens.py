@@ -1,5 +1,9 @@
+import logging
+
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 import six
+
+logger = logging.getLogger(__name__)
 
 
 class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):

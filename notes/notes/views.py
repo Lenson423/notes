@@ -13,27 +13,30 @@ from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
 
+import logging
+
+logger = logging.getLogger(__name__)
+
+authenticated_message = 'You are not authenticated to perform this action'
+
 
 def link_callback(uri, rel):
     """
     Convert HTML URIs to absolute system paths so xhtml2pdf can access those
     resources
     """
-    # use short variable names
-    sUrl = settings.STATIC_URL      # Typically /static/
-    sRoot = settings.STATIC_ROOT    # Typically /home/userX/project_static/
-    mUrl = settings.MEDIA_URL       # Typically /static/media/
-    mRoot = settings.MEDIA_ROOT     # Typically /home/userX/project_static/media/
+    sUrl = settings.STATIC_URL
+    sRoot = settings.STATIC_ROOT
+    mUrl = settings.MEDIA_URL
+    mRoot = settings.MEDIA_ROOT
 
-    # convert URIs to absolute system paths
     if uri.startswith(mUrl):
         path = os.path.join(mRoot, uri.replace(mUrl, ""))
     elif uri.startswith(sUrl):
         path = os.path.join(sRoot, uri.replace(sUrl, ""))
     else:
-        return uri  # handle absolute uri (ie: http://some.tld/foo.png)
+        return uri
 
-    # make sure that file exists
     if not os.path.isfile(path):
         raise Exception(
             'media URI must start with %s or %s' % (sUrl, mUrl)
@@ -46,7 +49,7 @@ def render_to_pdf(template_src, context_dict={}):
         Helper function to generate pdf from html
     '''
     template = get_template(template_src)
-    html  = template.render(context_dict)
+    html = template.render(context_dict)
     result = BytesIO()
     pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result, link_callback=link_callback)
     if not pdf.err:
@@ -55,12 +58,14 @@ def render_to_pdf(template_src, context_dict={}):
 
 
 def generate_pdf(request, slug):
+    logger.info(f"Generating PDF for note with slug: {slug}")
     note = get_object_or_404(Note, slug=slug)
     if note.user != request.user:
-        messages.error(request, 'You are not authenticated to perform this action')
+        logger.warning("User attempted to access a note they don't own.")
+        messages.error(request, authenticated_message)
         return redirect('notes')
-    notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
-    add_note_form = AddNoteForm()
+    # notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
+    # add_note_form = AddNoteForm()
     context = {
         'note_detail': note,
     }
@@ -68,18 +73,19 @@ def generate_pdf(request, slug):
     if pdf:
         response = HttpResponse(pdf, content_type='application/pdf')
         filename = "{}.pdf".format(note.slug)
-        content = "inline; filename={}".format(filename)
+        # content = "inline; filename={}".format(filename)
         content = "attachment; filename={}".format(filename)
         response['Content-Disposition'] = content
         return response
+    logger.error("Error rendering PDF.")
     return HttpResponse("Not found")
 
 
 def home(request):
     if request.user.is_authenticated:
+        logger.debug(f"Authenticated user {request.user} accessing home.")
         notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
         all_notes = Note.objects.filter(user=request.user).order_by('-updated_at')
-        # paginator = Paginator(all_notes, 15)
 
         if request.method == 'POST':
             form = AddNoteForm(request.POST)
@@ -89,9 +95,12 @@ def home(request):
                 form_data.save()
                 # Without this next line the tags won't be saved.
                 form.save_m2m()
-                form = AddNoteForm()
+                # form = AddNoteForm()
                 messages.success(request, 'Note added successfully!')
+                logger.info(f"Note added successfully by user {request.user}.")
                 return redirect('notes')
+            else:
+                logger.warning("Form submission failed; invalid data provided.")
         else:
             form = AddNoteForm()
         context = {
@@ -102,13 +111,14 @@ def home(request):
         }
         return render(request, 'notes.html', context)
     else:
+        logger.info("Unauthenticated user accessing the home page.")
         return render(request, 'index.html')
 
 
 def get_note_details(request, slug):
     note = get_object_or_404(Note, slug=slug)
     if note.user != request.user:
-        messages.error(request, 'You are not authenticated to perform this action')
+        messages.error(request, authenticated_message)
         return redirect('notes')
 
     notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
@@ -128,7 +138,7 @@ def get_note_details(request, slug):
 def edit_note_details(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if note.user != request.user:
-        messages.error(request, 'You are not authenticated to perform this action')
+        messages.error(request, authenticated_message)
         return redirect('notes')
     if request.method == 'POST':
         form = AddNoteForm(request.POST, instance=note)
@@ -150,18 +160,21 @@ def edit_note_details(request, pk):
 def confirm_delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if note.user != request.user:
-        messages.error(request, 'You are not authenticated to perform this action')
+        logger.warning("Unauthorized delete attempt by user.")
+        messages.error(request, authenticated_message)
         return redirect('notes')
-    # note.delete()
+    note.delete()
     context = {
         'note_detail': note,
     }
+    logger.info(f"Note with ID {pk} deleted by user {request.user}.")
     return render(request, 'modals/delete_note_modal.html', context)
+
 
 def delete_note(request, pk):
     note = get_object_or_404(Note, pk=pk)
     if note.user != request.user:
-        messages.error(request, 'You are not authenticated to perform this action')
+        messages.error(request, authenticated_message)
         return redirect('notes')
     note.delete()
     messages.success(request, 'Note deleted successfully!')
@@ -170,6 +183,7 @@ def delete_note(request, pk):
 
 def search_note(request):
     if request.is_ajax():
+        logger.debug("Processing AJAX request for note search.")
         q = request.GET.get('term')
         notes = Note.objects.filter(
             note_title__icontains=q,
@@ -183,12 +197,10 @@ def search_note(request):
             note_json['value'] = note.note_title
             results.append(note_json)
         data = json.dumps(results)
+        logger.info("Search results generated.")
     else:
-        note_json = {}
-        note_json['slug'] = None
-        note_json['label'] = None
-        note_json['value'] = None
-        data = json.dumps(note_json)
+        logger.debug("Non-AJAX request for note search.")
+        data = json.dumps({'slug': None, 'label': None, 'value': None})
     return HttpResponse(data)
 
 
@@ -206,13 +218,12 @@ def get_shareable_link(request, signed_pk):
 
 def get_all_notes_tags(request, slug):
     tag = get_object_or_404(Tag, slug=slug)
-    # Filter posts by tag name
     all_notes = Note.objects.filter(tags=tag, user=request.user)
     notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]
     add_note_form = AddNoteForm()
     context = {
-        'tag':tag,
-        'all_notes':all_notes,
+        'tag': tag,
+        'all_notes': all_notes,
         'notes': notes,
         'add_note_form': add_note_form
     }

@@ -16,6 +16,10 @@ import markdown.extensions.tables
 import markdown.extensions.toc
 from django_cryptography.fields import encrypt
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def generate_unique_slug(_class, field):
     """
@@ -23,13 +27,17 @@ def generate_unique_slug(_class, field):
         eg: `foo-bar` => `foo-bar-1`
         :param `field` is specific field for title.
     """
-    origin_slug = slugify(field)
-    unique_slug = origin_slug
-    numb = 1
-    while _class.objects.filter(slug=unique_slug).exists():
-        unique_slug = '%s-%d' % (origin_slug, numb)
-        numb += 1
-    return unique_slug
+    def generate_unique_slug(_class, field):
+        logger.debug(f"Generating slug for field: {field}")
+        origin_slug = slugify(field)
+        unique_slug = origin_slug
+        numb = 1
+        while _class.objects.filter(slug=unique_slug).exists():
+            unique_slug = '%s-%d' % (origin_slug, numb)
+            logger.debug(f"Slug '{unique_slug}' exists, incrementing suffix to find unique slug.")
+            numb += 1
+        logger.info(f"Generated unique slug: {unique_slug}")
+        return unique_slug
 
 
 class Note(models.Model):
@@ -63,8 +71,11 @@ class Note(models.Model):
 
     def save(self, *args, **kwargs):
         title = unidecode(self.note_title)
+        logger.info(f"Saving note: '{self.note_title}'")
+
         if self.slug:
             if slugify(title) != self.slug:
+                logger.warning(f"Slug for '{self.note_title}' has changed, generating a new unique slug.")
                 self.slug = generate_unique_slug(Note, title)
         else:
             self.slug = generate_unique_slug(Note, title)
@@ -79,7 +90,7 @@ class AddNoteForm(forms.ModelForm):
         widgets = {
             'tags': forms.TextInput(
                 attrs={
-                    'data-role':'tagsinput',
+                    'data-role': 'tagsinput',
                 }
             ),
         }

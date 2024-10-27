@@ -10,7 +10,6 @@ class UserTests(TestCase):
         self.username = 'testuser'
         self.password = 'testpassword'
         self.user = DjangoUser.objects.create_user(username=self.username, password=self.password)
-        self.client = self.client
         self.user_class = User()
 
     @mock.patch('your_app.models.login')
@@ -21,7 +20,7 @@ class UserTests(TestCase):
 
         # Вызов метода создания пользователя
         request = mock.Mock()
-        user = self.user_class.createUser(self.username, self.password, request)
+        user = self.user_class.create_user(self.username, self.password, request)
 
         # Проверка, что пользователь аутентифицирован и залогинен
         mock_authenticate.assert_called_once_with(username=self.username, password=self.password)
@@ -72,5 +71,5 @@ class UserTests(TestCase):
     def test_logging_output(self):
         with self.assertLogs('your_app', level='INFO') as log:
             request = mock.Mock()
-            self.user_class.createUser(self.username, self.password, request)
+            self.user_class.create_user(self.username, self.password, request)
             self.assertIn('User Created ' + self.username, log.output[0])

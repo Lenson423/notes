@@ -19,17 +19,18 @@ from django.contrib import messages
 
 from notekeeper.settings import EMAIL_HOST_USER
 
+
 class View:
-    def signup(request):
-        if request.method == 'POST':
-            form = SignUpForm(request.POST)
+    def signup(self):
+        if self.method == 'POST':
+            form = SignUpForm(self.POST)
             if form.is_valid():
                 user = form.save(commit=False)
                 user.is_active = False  # Деактивируем аккаунт до подтверждения email
                 user.save()
 
                 # Отправляем email с подтверждением
-                current_site = get_current_site(request)
+                current_site = get_current_site(self)
                 mail_subject = 'Activate your account'
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
@@ -40,38 +41,36 @@ class View:
                     'token': token,
                 })
                 send_mail(mail_subject, message, EMAIL_HOST_USER, [user.email])
-                messages.info(request, 'Please confirm your email to complete registration.')
+                messages.info(self, 'Please confirm your email to complete registration.')
                 return redirect('login')
         else:
             form = SignUpForm()
-        return render(request, 'signup.html', {'form': form})
+        return render(self, 'signup.html', {'form': form})
 
-
-    def logout_view(request):
-        logout(request)
+    def logout_view(self):
+        logout(self)
         return redirect('login')
 
-
-    def change_password(request):
-        if request.method == 'POST':
-            form = PasswordChangeForm(request.user, request.POST)
+    def change_password(self):
+        if self.method == 'POST':
+            form = PasswordChangeForm(self.user, self.POST)
             if form.is_valid():
                 user = form.save()
-                update_session_auth_hash(request, user)  # Important!
-                messages.success(request, 'Your password was successfully updated!')
+                update_session_auth_hash(self, user)  # Important!
+                messages.success(self, 'Your password was successfully updated!')
 
                 refresh = RefreshToken.for_user(user)
-                request.session['refresh'] = str(refresh)
-                request.session['access'] = str(refresh.access_token)
+                self.session['refresh'] = str(refresh)
+                self.session['access'] = str(refresh.access_token)
                 return redirect('notes')
         else:
-            form = PasswordChangeForm(request.user)
+            form = PasswordChangeForm(self.user)
 
-        return render(request, 'change_password.html', {
+        return render(self, 'change_password.html', {
             'form': form
         })
 
-    def activate(request, uidb64, token):
+    def activate(self, uidb64, token):
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
             user = get_object_or_404(User, pk=uid)
@@ -82,9 +81,9 @@ class View:
             user.is_active = True
             user.is_email_verified = True  # Обновляем статус верификации
             user.save()
-            login(request, user)
-            messages.success(request, 'Your account has been activated!')
+            login(self, user)
+            messages.success(self, 'Your account has been activated!')
             return redirect('home')
         else:
-            messages.warning(request, 'Activation link is invalid!')
+            messages.warning(self, 'Activation link is invalid!')
             return redirect('signup')
