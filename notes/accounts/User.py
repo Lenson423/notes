@@ -1,13 +1,14 @@
 import logging
 from django.contrib.auth import login, authenticate, logout, update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.db.models import Model
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 logger = logging.getLogger(__name__)
 
 
-class User:
+class User(Model):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
