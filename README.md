@@ -94,6 +94,8 @@
 <li>GET / – Домашняя страница.
 </ul>
 
+<img src="src/readmeIMG0.png" alt="Swagger UI">
+
 # Frontend
 
 ## Описание проекта
