@@ -88,6 +88,8 @@ INSTALLED_APPS = [
     'accounts',
     'notes',
     'django_extensions',
+    'rest_framework_swagger', 
+    'drf_yasg'  
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
