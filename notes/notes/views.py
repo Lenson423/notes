@@ -81,6 +81,19 @@ def generate_pdf(request, slug):
     return HttpResponse("Not found")
 
 
+def chat(request):
+    if request.user.is_authenticated:
+        logger.debug(f"Authenticated user {request.user} accessing chat page.")
+        context = {
+            'script_name': request.META['SCRIPT_NAME'],
+        }
+        return render(request, 'chat.html', context)
+    else:
+        logger.info("Unauthenticated user accessing the home page.")
+
+        return render(request, 'index.html')
+
+
 def home(request):
     if request.user.is_authenticated:
         logger.debug(f"Authenticated user {request.user} accessing home.")

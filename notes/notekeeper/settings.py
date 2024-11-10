@@ -50,7 +50,7 @@ LOGGING = {
         },
     },
     'loggers': {
-        'notes': {  # Замените 'your_app_name' на имя вашего приложения
+        'notes': {
             'handlers': ['file', 'console'],
             'level': 'DEBUG',
             'propagate': False,
@@ -87,10 +87,22 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'notes',
+    'chat',
     'django_extensions',
+    'channels',
     # 'rest_framework_swagger',
     # 'drf_yasg'
 ]
+
+ASGI_APPLICATION = 'notekeeper.asgi.application'
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap4"
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -137,8 +149,6 @@ TEMPLATES = [
         },
     },
 ]
-
-WSGI_APPLICATION = 'notekeeper.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
