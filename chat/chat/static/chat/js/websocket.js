@@ -1,3 +1,23 @@
+const logServerUrl = `25.31.176.32:8000/logs/`;
+
+function logEvent(type, message, additionalData = {}) {
+    const logEntry = {
+        type,
+        message,
+        additionalData,
+        timestamp: new Date().toISOString(),
+        userId: document.querySelector("#id-user-id").value,
+    };
+
+    fetch(logServerUrl, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(logEntry),
+    }).catch(console.error);
+}
+
 // Global => ScrollToBottom, getMessagHtmlText, host
 
 const wsprotocol = host === "https" ? "wss" : "ws";
@@ -11,38 +31,44 @@ let socket;
 function addAttributesToSocket(socket) {
     socket.onmessage = (e) => {
         const data = JSON.parse(e.data);
-        appendMessage(data, (owner = data.owner == userId));
+        logEvent("info", "Received message", { data });
+        appendMessage(data, data.owner == userId);
     };
 
     socket.onerror = (e) => {
-        console.log(console.error(e));
+        logEvent("error", "WebSocket error occurred", { error: e });
+        console.error("WebSocket error:", e);
     };
 
     socket.onclose = () => {
+        logEvent("info", "WebSocket disconnected", { websocketurl });
         console.log("Disconnected");
         CONNECTED_TO_SERVER = false;
         connectToServer();
     };
+
+    socket.onopen = () => {
+        logEvent("info", "WebSocket connection established", { websocketurl });
+        console.log("WebSocket is open");
+    };
 }
 
 function makeConnection(action) {
-    // It takes a callback function
     let chatSocket = new WebSocket(websocketurl);
     const connect = setInterval(() => {
-        // Using setInterval is neccessary because i want to keep
-        // tring to connect to the server until the socket is open
-
-        console.log("Connecting");
+        console.log("Connecting...");
         if (chatSocket.readyState === WebSocket.OPEN) {
-            // The server is connected
-            clearInterval(connect); // Clear the interval
-            action(chatSocket); // call the callback with takes the newly created socket
-            console.log("Connected");
+            clearInterval(connect); // Успешное подключение
+            logEvent("info", "WebSocket connected successfully", { websocketurl });
+            action(chatSocket);
         } else if (chatSocket.readyState === WebSocket.CLOSED) {
-            console.error(`Socket closed, retrying in ${retryFrequency / 1000}s`); // Connection failed
-            chatSocket = new WebSocket(websocketurl); // Try to connect again
+            logEvent("warning", "WebSocket connection failed, retrying", {
+                retryAfter: retryFrequency / 1000,
+            });
+            console.error(`Socket closed, retrying in ${retryFrequency / 1000}s`);
+            chatSocket = new WebSocket(websocketurl); // Попытка снова подключиться
         }
-    }, 2000);
+    }, retryFrequency);
 }
 
 function connectToServer() {
@@ -66,18 +92,21 @@ function appendMessage(message, owner) {
     messageArea.innerHTML += messageHtmlText;
     document.getElementById("active-members-count").textContent = active_count - 1;
     scrollToBottom();
+    logEvent("info", "Message appended", { content, username, owner });
 }
 
 document.querySelector(".message-input-container").addEventListener("submit", (e) => {
     e.preventDefault();
     if (!CONNECTED_TO_SERVER) {
-        alert("Error sending message, check you network connection");
+        alert("Error sending message, check your network connection");
+        logEvent("error", "Message sending failed, WebSocket disconnected");
         return;
     }
     const messageInputEl = e.target.message;
     const message = messageInputEl.value;
     if (message.length < 1) return;
     socket.send(JSON.stringify({ message: message }));
+    logEvent("info", "Message sent", { message });
     messageInputEl.value = "";
 });
 

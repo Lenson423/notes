@@ -5,6 +5,24 @@ from django.urls import reverse_lazy
 from .forms import ChatRoomCreateForm
 from accounts.mixins import CreateUserProfileInstanceIfUserIsAuthenticated
 
+from django.http import JsonResponse
+from django.views import View
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class Logs(View):
+    def post(self, request, *args, **kwargs):
+        try:
+            log_data = request.body.decode('utf-8')
+            logger.info(f"Client Log: {log_data}")
+
+            return JsonResponse({"message": "Log received successfully"}, status=200)
+        except Exception as e:
+            logger.error(f"Error processing log: {e}")
+            return JsonResponse({"message": "Failed to process log"}, status=500)
+
 
 class HomeView(CreateUserProfileInstanceIfUserIsAuthenticated, ListView):
     template_name = "chat/index.html"
