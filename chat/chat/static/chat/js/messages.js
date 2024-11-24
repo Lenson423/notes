@@ -27,20 +27,20 @@ const getMessages = async () => {
         const response = await fetch(roomMessagesApiUrl);
         const data = await response.json();
         if (response.status === 200) {
-            logEvent("info", "Successfully fetched messages", { roomId });
+            logEvent("info", "Successfully fetched messages", {roomId});
             return data;
         }
-        logEvent("error", "Failed to fetch messages", { roomId, status: response.status });
+        logEvent("error", "Failed to fetch messages", {roomId, status: response.status});
         return [];
     } catch (error) {
-        logEvent("error", "Error while fetching messages", { roomId, error: error.message });
+        logEvent("error", "Error while fetching messages", {roomId, error: error.message});
         console.error(error);
         return [];
     }
 };
 
 function updateMessagesHeader(topic, number_of_members, active_members, dp) {
-    logEvent("info", "Updating message header", { topic, number_of_members, active_members });
+    logEvent("info", "Updating message header", {topic, number_of_members, active_members});
     const messageSection = document.querySelector(".message-section-header");
     messageSection.innerHTML = `
     <div class="conversation-info">
@@ -76,9 +76,9 @@ function getMessageHtmlText(content, owner_username, isOwner, user_profile_pictu
 }
 
 function updateMembersList(members) {
-    logEvent("info", "Updating members list", { memberCount: members.length });
+    logEvent("info", "Updating members list", {memberCount: members.length});
     const membersHtmlText = members
-        .map(({ username, profile_image, active }) => {
+        .map(({username, profile_image, active}) => {
             return `
             <div class="user-group">
                 <img src="${profile_image}" class="profile-image"/>
@@ -100,10 +100,10 @@ function updateMembersList(members) {
     try {
         const data = await getMessages();
         if (!data) {
-            logEvent("error", "No data returned from getMessages", { roomId });
+            logEvent("error", "No data returned from getMessages", {roomId});
             return;
         }
-        const { topic, number_of_members, active_members_count, dp, members } = data;
+        const {topic, number_of_members, active_members_count, dp, members} = data;
         const messagesHtmlElementStr = document.querySelector(".messages");
         updateMessagesHeader(topic, number_of_members, active_members_count, dp);
         updateMembersList(members);
@@ -118,9 +118,9 @@ function updateMembersList(members) {
         });
         messagesHtmlElementStr.innerHTML += messageHtmlEl.join("");
         scrollToBottom();
-        logEvent("info", "Messages displayed successfully", { roomId, messageCount: data.messages.length });
+        logEvent("info", "Messages displayed successfully", {roomId, messageCount: data.messages.length});
     } catch (error) {
-        logEvent("error", "Error in displaying messages", { roomId, error: error.message });
+        logEvent("error", "Error in displaying messages", {roomId, error: error.message});
         console.error(error);
     }
 })();
