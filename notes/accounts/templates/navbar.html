@@ -24,6 +24,21 @@
     <a class="navbar-brand" href="{% url 'home' %}">
         {% trans "Notes" %}
     </a>
+    <form action="{% url 'set_language' %}" method="post"
+          style="background: #003153; border: none;">{% csrf_token %}
+        <select name="language" onchange="this.form.submit()"
+                style="background: #003153; border: none;color: white;">
+            {% get_current_language as LANGUAGE_CODE %}
+            {% get_available_languages as LANGUAGES %}
+            {% get_language_info_list for LANGUAGES as languages %}
+            {% for language in languages %}
+                <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                    {{ language.name_local }} ({{ language.code }})
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
     <button class="navbar-toggler leftNavbarToggler" type="button" data-toggle="collapse" data-target="#navbarNav"
             aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>

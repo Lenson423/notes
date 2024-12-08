@@ -59,7 +59,6 @@ LOGGING = {
     },
 }
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -185,8 +184,6 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
 
 USE_I18N = True  # localize our app
@@ -195,10 +192,14 @@ USE_L10N = True  # localization for javascript
 
 USE_TZ = True  # write time zone for postgre DB now dont need
 
+LANGUAGE_CODE = 'en'
+
 LANGUAGES = [
     ('en', _('English')),
     ('ru', _('Russian')),
 ]
+
+LANGUAGE_COOKIE_NAME = 'lang'
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),

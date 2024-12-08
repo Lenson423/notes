@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.urls import path
 from django.urls import include
@@ -22,8 +23,8 @@ from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-
-urlpatterns = [
+urlpatterns = i18n_patterns(
+    path('i18n/', include('django.conf.urls.i18n')),
     path('admin/', admin.site.urls),
     path('accounts/signup/', views.View.signup, name='signup'),
     path('accounts/login/', LoginView.as_view(redirect_authenticated_user=True), name='login'),
@@ -36,4 +37,4 @@ urlpatterns = [
     path('summernote/', include('django_summernote.urls')),
     path('', include('notes.urls')),
     # path('', include('chat.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -16,8 +16,9 @@ Including another URLconf
 from django.urls import path
 from . import views
 from django.contrib.auth.decorators import login_required
-#from drf_yasg import openapi
-#from drf_yasg.views import get_schema_view
+
+# from drf_yasg import openapi
+# from drf_yasg.views import get_schema_view
 
 # schema_view = get_schema_view(
 #     openapi.Info(
