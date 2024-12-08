@@ -73,7 +73,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
+    # 'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -88,14 +88,15 @@ INSTALLED_APPS = [
     'rest_framework',
     'accounts',
     'notes',
-    'chat',
+    # 'chat',
     'django_extensions',
-    'channels',
+    # 'channels',
     # 'rest_framework_swagger',
     # 'drf_yasg'
 ]
 
-ASGI_APPLICATION = 'notekeeper.asgi.application'
+WSGI_APPLICATION = 'notekeeper.wsgi.application'
+# ASGI_APPLICATION = 'notekeeper.settings' 
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
@@ -157,7 +158,7 @@ TEMPLATES = [
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'db', 'db.sqlite3'),
     }
 }
 

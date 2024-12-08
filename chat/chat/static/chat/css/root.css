@@ -20,12 +20,12 @@ a:hover:not(header a) {
 }
 
 html {
-    --main-color: #101329;
+    --main-color: #F5F5DC;
     --header-height: 40px
 }
 
 body {
-    background: #002047;
+    background: #F5F5DC;
     display: grid;
     grid-template-rows: var(--header-height) auto;
     height: 100vh;

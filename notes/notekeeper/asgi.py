@@ -6,7 +6,7 @@ from django.urls import path
 
 from chat import consumer
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chat.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'notekeeper.settings')
 
 ws_urlpatterns = [
     path("ws/<str:room_name>/", consumer.ChatConsumer.as_asgi()),

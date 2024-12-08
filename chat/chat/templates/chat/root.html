@@ -39,7 +39,7 @@
                 node = document.querySelector("header h1");
                 if (window.innerWidth < 500) {
                     node.innerText = "LU";
-                } else node.innerText = "LinkUp";
+                } else node.innerText = "Chat";
             });
             document.querySelector("header button").addEventListener("click", () => {
                 window.location = "{% url 'create-room' %}";
