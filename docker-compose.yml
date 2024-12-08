@@ -1,0 +1,40 @@
+services:
+  back:
+    build:
+      context: ./chat
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./chat:/chat
+      - db_data:/chat/db/
+    environment:
+      - DEBUG=True
+      
+  web:
+    build:
+      context: ./notes
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./notes:/notes
+      - db_data1:/notes/db/
+    depends_on:
+      - redis
+    environment:
+      - DEBUG=True
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+  redis:
+    image: redis:6.2-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
+volumes:
+  redis_data:
+  db_data:
+  db_data1:
