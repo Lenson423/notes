@@ -15,6 +15,7 @@ import markdown.extensions.codehilite
 import markdown.extensions.tables
 import markdown.extensions.toc
 from django_cryptography.fields import encrypt
+from django.utils.translation import gettext_lazy as _
 
 
 def generate_unique_slug(_class, field):

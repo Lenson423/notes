@@ -10,13 +10,13 @@ body{position:relative}.overlay,.sideMenu{position:fixed;bottom:0}.overlay{top:0
     position:relative;
     overflow-y:auto;
     overflow-x:hidden;
-  }
-
-  #main {
-height:100%;
-overflow:auto;
 }
-  
+
+#main {
+    height:100%;
+    overflow:auto;
+}
+
 /*
 * off Canvas sidebar
 * --------------------------------------------------
@@ -29,7 +29,7 @@ overflow:auto;
         transition: all 0.25s ease-out;
         width:calc(100% + 300px);
     }
-        
+
     .row-offcanvas-left
     {
         left: -300px;

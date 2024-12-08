@@ -1,6 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.translation import gettext_lazy as _
 
 import logging
 
@@ -15,9 +16,21 @@ class SignUpForm(UserCreationForm):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
-    first_name = forms.CharField(max_length=32)
-    last_name = forms.CharField(max_length=32)
-    email = forms.EmailField(max_length=64)
+    first_name = forms.CharField(
+        max_length=32,
+        label=_("First Name"),
+        help_text=_("Enter your first name.")
+    )
+    last_name = forms.CharField(
+        max_length=32,
+        label=_("Last Name"),
+        help_text=_("Enter your last name.")
+    )
+    email = forms.EmailField(
+        max_length=64,
+        label=_("Email Address"),
+        help_text=_("Enter a valid email address.")
+    )
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -27,7 +40,7 @@ class SignUpForm(UserCreationForm):
         super(SignUpForm, self).__init__(*args, **kwargs)
         logger.debug("Initializing SignUpForm with args: %s, kwargs: %s", args, kwargs)
 
-        self.fields['password1'].help_text = "Your password must contain at least 8 characters"
+        self.fields['password1'].help_text = _("Your password must contain at least 8 characters")
         self.fields['password2'].help_text = None
         logger.info("Password help text updated.")
 

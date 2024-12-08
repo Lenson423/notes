@@ -13,6 +13,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from django.core.signing import BadSignature
 from taggit.models import Tag
+from django.utils.translation import gettext_lazy as _
 
 # Setup logger
 logger = logging.getLogger(__name__)
@@ -62,7 +63,7 @@ def generate_pdf(request, slug):
     try:
         note = get_object_or_404(Note, slug=slug)
         if note.user != request.user:
-            messages.error(request, 'You are not authenticated to perform this action')
+            messages.error(request, _('You are not authenticated to perform this action'))
             return redirect('notes')
 
         notes = Note.objects.filter(user=request.user).order_by('-updated_at')[:10]

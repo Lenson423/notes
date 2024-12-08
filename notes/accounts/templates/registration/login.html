@@ -1,6 +1,7 @@
 {% extends 'registration_base.html' %}
+{% load i18n %}
 {% load tags %}
-{% block title %}Login{% endblock %}
+{% block title %}{% trans "Login" %}{% endblock %}
 
 {% block content %}
 
@@ -9,88 +10,81 @@
     </head>
 
     <style>
-        $primary-color: #FF8E00;
-        $secondary-color: #FF9E55;
-        $placeholder-color: #aaa;
-        $border-color: #ccc;
-        $text-color: black;
-        $background-color: white;
-
         .form-container {
             display: flex;
-            justify-content: center; // Центрирование по горизонтали
-        flex-direction: column; // Вертикальное размещение элементов
+            justify-content: center; /* Центрирование по горизонтали */
+            flex-direction: column; /* Вертикальное размещение элементов */
+        }
 
         .form-control {
             margin: 5px auto;
-            border: 2px solid $border-color; // Серый цвет рамки
-        border-radius: 8px; // Закругленные края
-        padding: 10px; // Отступы внутри поля
-        font-size: 16px; // Размер шрифта
-        width: 60%; // Занимает всю ширину родительского элемента
-        transition: border-color 0.3s; // Плавный переход для цвета рамки
-
-        &::placeholder {
-            color: $placeholder-color; // Цвет текста по умолчанию
-        font-style: italic; // Курсив для текста по умолчанию
+            border: 2px solid #ccc; /* Серый цвет рамки */
+            border-radius: 8px; /* Закругленные края */
+            padding: 10px; /* Отступы внутри поля */
+            font-size: 16px; /* Размер шрифта */
+            width: 60%; /* Занимает всю ширину родительского элемента */
+            transition: border-color 0.3s; /* Плавный переход для цвета рамки */
         }
 
-            &:focus {
-                border-color: $primary-color; // Оранжевая рамка при фокусе
-            outline: none; // Убираем стандартное выделение
-            }
+        .form-control::placeholder {
+            color: #aaa; /* Цвет текста по умолчанию */
+            font-style: italic; /* Курсив для текста по умолчанию */
         }
+
+        .form-control:focus {
+            border-color: #FF8E00; /* Оранжевая рамка при фокусе */
+            outline: none; /* Убираем стандартное выделение */
         }
 
         .welcome-container {
-            width: 100%; // Даем 100% ширины, а flex будет управлять распределением
-        margin: 10px auto;
+            width: 100%; /* Даем 100% ширины, а flex будет управлять распределением */
+            margin: 10px auto;
             text-align: center;
-
-            .welcome-title {
-                font-weight: bold;
-                color: $text-color;
-                font-family: 'Laila', sans-serif;
-                font-size: 48px;
-                margin-bottom: 60px;
-            }
-
-            .text-title {
-                font-family: 'Laila', sans-serif;
-                font-size: 24px;
-            }
-
-            .custom-button {
-                font-weight: bold;
-                display: block;
-                border: 2px solid $primary-color;
-                border-radius: 5px;
-                color: white;
-                font-family: 'Laila', sans-serif;
-                background-color: $primary-color;
-                padding: 15px 0;
-                width: 50%;
-                margin: 30px auto;
-                font-size: 24px;
-                text-decoration: none;
-                transition: background-color 0.3s, color 0.3s;
-
-                &:hover {
-                    border: 2px solid $secondary-color;
-                    background-color: $secondary-color;
-                    text-decoration: none;
-                }
-            }
         }
 
-        // Настройки для планшетов и больших экранов
+        .welcome-title {
+            font-weight: bold;
+            color: black;
+            font-family: 'Laila', sans-serif;
+            font-size: 48px;
+            margin-bottom: 60px;
+        }
+
+        .text-title {
+            font-family: 'Laila', sans-serif;
+            font-size: 24px;
+        }
+
+        .custom-button {
+            font-weight: bold;
+            display: block;
+            border: 2px solid #FF8E00;
+            border-radius: 5px;
+            color: white;
+            font-family: 'Laila', sans-serif;
+            background-color: #FF8E00;
+            padding: 15px 0;
+            width: 50%;
+            margin: 30px auto;
+            font-size: 24px;
+            text-decoration: none;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .custom-button:hover {
+            border: 2px solid #FF9E55;
+            background-color: #FF9E55;
+            text-decoration: none;
+        }
+
+        /* Настройки для планшетов и больших экранов */
         @media (min-width: 768px) {
             .content-wrapper {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin: 0 auto;
-                width: 100%; // Контейнер на всю ширину
+                width: 100%; /* Контейнер на всю ширину */
             }
 
             .welcome-container {
@@ -101,39 +95,39 @@
                 width: 50%;
             }
         }
-
     </style>
 
-<div class="welcome-container">
-    {% if form.non_field_errors %}
-        {% for error in form.non_field_errors %}
-            <div class="col-lg-6 col-md-6 offset-lg-3 offset-md-3 col-sm-12 col-xs-12 alert alert-danger" style="margin-top: 3%; margin-bottom: 3%">{{ error }}</div>
-        {% endfor %}
-    {% endif %}
-    <div>
-        <h1 class="welcome-title">Login</h1>
-    </div>
-    <div class="row">
-        <div class="col-lg-6 col-md-6 offset-md-3">
+    <div class="welcome-container">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="col-lg-6 col-md-6 offset-lg-3 offset-md-3 col-sm-12 col-xs-12 alert alert-danger"
+                     style="margin-top: 3%; margin-bottom: 3%">{{ error }}</div>
+            {% endfor %}
+        {% endif %}
+        <div>
+            <h1 class="welcome-title">{% trans "Login" %}</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6 offset-md-3">
                 <form method="post" class="form-container" action="{% url 'login' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="next" value="{{ next }}" />
+                    <input type="hidden" name="next" value="{{ next }}"/>
                     <div class="row">
                         <div class="form-group col">
                             <label for="username" class="text-title">{{ form.username.label }}</label>
-                            {{ form.username | add_css:"form-control"}}
+                            {{ form.username | add_css:"form-control" }}
                         </div>
                     </div>
                     <div class="row">
                         <div class="form-group col">
                             <label for="password" class="text-title">{{ form.password.label }}</label>
-                            {{ form.password | add_css:"form-control"}}
+                            {{ form.password | add_css:"form-control" }}
                         </div>
                     </div>
-                    <button class="custom-button" type="submit">Login</button>
+                    <button class="custom-button" type="submit">{% trans "Login" %}</button>
                 </form>
+            </div>
         </div>
-    </div>
 
-</div>
+    </div>
 {% endblock %}

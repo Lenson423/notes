@@ -16,6 +16,7 @@ from django.contrib.auth import logout
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 
 from notekeeper.settings import EMAIL_HOST_USER
 
@@ -31,7 +32,7 @@ class View:
 
                 # Отправляем email с подтверждением
                 current_site = get_current_site(self)
-                mail_subject = 'Activate your account'
+                mail_subject = _('Activate your account')
                 token = default_token_generator.make_token(user)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 message = render_to_string('activation_email.html', {
@@ -41,7 +42,7 @@ class View:
                     'token': token,
                 })
                 send_mail(mail_subject, message, EMAIL_HOST_USER, [user.email])
-                messages.info(self, 'Please confirm your email to complete registration.')
+                messages.info(self, _('Please confirm your email to complete registration.'))
                 return redirect('login')
         else:
             form = SignUpForm()
@@ -57,7 +58,7 @@ class View:
             if form.is_valid():
                 user = form.save()
                 update_session_auth_hash(self, user)  # Important!
-                messages.success(self, 'Your password was successfully updated!')
+                messages.success(self, _('Your password was successfully updated!'))
 
                 refresh = RefreshToken.for_user(user)
                 self.session['refresh'] = str(refresh)
@@ -82,8 +83,8 @@ class View:
             user.is_email_verified = True  # Обновляем статус верификации
             user.save()
             login(self, user)
-            messages.success(self, 'Your account has been activated!')
+            messages.success(self, _('Your account has been activated!'))
             return redirect('home')
         else:
-            messages.warning(self, 'Activation link is invalid!')
+            messages.warning(self, _('Activation link is invalid!'))
             return redirect('signup')
